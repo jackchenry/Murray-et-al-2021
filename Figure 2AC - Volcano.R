@@ -1,4 +1,4 @@
-# Aims
+# Aims:
 # - Plot a volcano plot for the ECM-Targeted RNA-Seq panel data.
 # - Volcano plot should show Wt vs KO.
 # - Separate volcano plots for the basal and TGF-stimulated conditions.
@@ -7,7 +7,9 @@
 #Volcano plots will be plotted using Enhanced Volcano
 library("EnhancedVolcano")
 
-#Basal
+
+
+## Basal Volcano ----
 basalShrunkResults <- read.csv("./Data/ECM Targeted RNAseq Basal Shrunk DE Results.csv")
 basalVolcano <- EnhancedVolcano(
   basalShrunkResults,
@@ -24,7 +26,7 @@ basalVolcano
 
 
 
-#TGF
+## TGF Volcano ----
 tgfShrunkResults <- read.csv("./Data/ECM Targeted RNAseq TGF Shrunk DE Results.csv")
 tgfVolcano <- EnhancedVolcano(
   tgfShrunkResults,

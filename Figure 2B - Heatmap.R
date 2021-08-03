@@ -1,13 +1,17 @@
-# Aims
+# Aims:
 # - Plot a heatmap of the ECM-Targeted RNA-Seq panel data.
-# - Gather the samples together to plot an average for TGF-treated and untreated (basal) samples.
+
+# Notes:
+# - Plot an average of the samples for TGF-treated and untreated (basal) samples.
 # - Heatmap should be ordered by log-fold-change
 # - If log fold change is greater than 1 then the name should be in bold
 
 #Heatmap ploted in ggplot2
 library("ggplot2")
 
-#Basal
+
+
+## Basal Heatmap ----
 #Data is read into the environment
 basalResults <- read.csv("./Data/ECM Targeted RNAseq Basal DE Results.csv")
 
@@ -37,7 +41,7 @@ basalPlot
 
 
 
-#TGF-stimulated
+## TGF-stimulated Heatmap ----
 #Data is read into the environment
 tgfResults <- read.csv("./Data/ECM Targeted RNAseq TGF DE Results.csv")
 

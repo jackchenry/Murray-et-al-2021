@@ -1,4 +1,4 @@
-# Aims
+# Aims:
 # - Analyse ECM-Targeted RNA-Seq panel data.
 # - Look for differentially expressed genes.
 
@@ -23,6 +23,22 @@ rawData <- rawData[which(substr(rawData$gene, start = 1, stop = 3) == "ENS"), ]
 #Data transformed into a count matrix
 rawCounts <- data.frame(pivot_wider(rawData, names_from = sample, values_from = reads), row.names = 1)
 
+#The reference genes provided by Qiaseq are used to normalise the sequencing results
+referenceGenes <- c(
+  "ENSMUSG00000034601",
+  "ENSMUSG00000043323",
+  "ENSMUSG00000024383",
+  "ENSMUSG00000028651",
+  "ENSMUSG00000022771",
+  "ENSMUSG00000031706",
+  "ENSMUSG00000039759",
+  "ENSMUSG00000051390",
+  "ENSMUSG00000033961"
+)
+
+
+
+## DESeq2 ----
 #The sample group information is set up in a metadata dataframe
 metadata <- data.frame(
   sampleID = colnames(rawCounts),
@@ -42,19 +58,6 @@ metadata <- data.frame(
    "Basal", "Basal", "Basal",
    "TGF", "TGF", "TGF")),
   stringsAsFactors = FALSE
-)
-
-#The reference genes provided by Qiaseq are used to normalise the sequencing results
-referenceGenes <- c(
-  "ENSMUSG00000034601",
-  "ENSMUSG00000043323",
-  "ENSMUSG00000024383",
-  "ENSMUSG00000028651",
-  "ENSMUSG00000022771",
-  "ENSMUSG00000031706",
-  "ENSMUSG00000039759",
-  "ENSMUSG00000051390",
-  "ENSMUSG00000033961"
 )
 
 #Differential expression analysis is performed using DESeq2
@@ -79,6 +82,9 @@ write.csv(tgfNormalisedCounts, file = "./Data/TGF Normalised Count Matrix.csv")
 basalDEResults <- results(DESeqData, c("condition", "KO_Basal", "Wt_Basal"))
 tgfDEResults <- results(DESeqData, c("condition", "KO_TGF", "Wt_TGF"))
 
+
+
+## Gene Information and Saving Results ----
 #ID information downloaded using Biomart
 mouse <- useMart("ensembl", dataset = "mmusculus_gene_ensembl")
 geneInfo <- getBM(
@@ -105,6 +111,7 @@ write.csv(tgfResults, file = "./Data/ECM Targeted RNAseq TGF DE Results.csv")
 
 
 
+## Log-Fold-Shrink Data ----
 #Some log-fold shrink methods are applied for use in plotting the volcano plots
 #DESeq is performed again using Wt-Basal as the reference level. This is done to set up the right coefs for the lfcShrink
 metadata$condition <- relevel(metadata$condition, ref = "Wt_Basal")
@@ -136,3 +143,5 @@ tgfShrinkRes <- data.frame(tgfShrinkRes, row.names = "Row.names")
 #Results saved to a csv for later use
 write.csv(basalShrinkRes, file = "./Data/ECM Targeted RNAseq Basal Shrunk DE Results.csv")
 write.csv(tgfShrinkRes, file = "./Data/ECM Targeted RNAseq TGF Shrunk DE Results.csv")
+
+
