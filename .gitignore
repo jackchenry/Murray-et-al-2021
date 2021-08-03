@@ -38,3 +38,6 @@ rsconnect/
 # Ignore notebooks
 *.nb.html
 *.html
+
+# Ignore Data
+Data/
