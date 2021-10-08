@@ -7,6 +7,7 @@
 # - Therefore original counts were obtained from the SRA
 
 
+
 ## Raw Counts ----
 library("Rsubread")
 #Raw counts are extracted using a standard Rsubread pipeline
@@ -41,6 +42,7 @@ features <- featureCounts(
 )
 djurecRawCounts <- data.frame(features$counts)
 write.csv(djurecRawCounts, file = "./Data/Djurec NPFCAF Count Matrix.csv")
+
 
 
 ## DESeq2 Differential Expression Analysis ----

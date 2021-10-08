@@ -10,7 +10,7 @@ library("EnhancedVolcano")
 
 
 ## Basal Volcano ----
-basalShrunkResults <- read.csv("./Data/ECM Targeted RNAseq Basal Shrunk DE Results.csv")
+basalShrunkResults <- read.csv("./Data/PSCs Basal Shrunk DE Results.csv")
 basalVolcano <- EnhancedVolcano(
   basalShrunkResults,
   lab = basalShrunkResults$mgi_symbol,
@@ -27,7 +27,7 @@ basalVolcano
 
 
 ## TGF Volcano ----
-tgfShrunkResults <- read.csv("./Data/ECM Targeted RNAseq TGF Shrunk DE Results.csv")
+tgfShrunkResults <- read.csv("./Data/PSCs TGF Shrunk DE Results.csv")
 tgfVolcano <- EnhancedVolcano(
   tgfShrunkResults,
   lab = tgfShrunkResults$mgi_symbol,

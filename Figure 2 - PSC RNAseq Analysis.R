@@ -11,7 +11,7 @@ library("DESeq2")
 library("biomaRt")
 
 #Read data into the environment
-csv <- read.csv("./Data/RawQiaseqCSV.csv", stringsAsFactors = FALSE)
+csv <- read.csv("./Data/Raw Qiaseq Counts.csv", stringsAsFactors = FALSE)
 #Only keep the interesting data - sample, ID and read columns
 rawData <- data.frame(
   sample = as.factor(csv$read.set),
@@ -75,8 +75,8 @@ normalisedCounts <- data.frame(counts(DESeqData, normalized = TRUE))
 basalNormalisedCounts <- normalisedCounts[ , metadata[metadata$stimulation == "Basal", "sampleID"]]
 tgfNormalisedCounts <- normalisedCounts[ , metadata[metadata$stimulation == "TGF", "sampleID"]]
 
-write.csv(basalNormalisedCounts, file = "./Data/Basal Normalised Count Matrix.csv")
-write.csv(tgfNormalisedCounts, file = "./Data/TGF Normalised Count Matrix.csv")
+write.csv(basalNormalisedCounts, file = "./Data/PSCs Basal Normalised Count Matrix.csv")
+write.csv(tgfNormalisedCounts, file = "./Data/PSCs TGF Normalised Count Matrix.csv")
 
 #DESeq calculates results. Results are obtained for each TGF treated and untreated condition.
 basalDEResults <- results(DESeqData, c("condition", "KO_Basal", "Wt_Basal"))
@@ -106,8 +106,8 @@ basalResults <- basalResults[order(basalResults$stat), ]
 tgfResults <- tgfResults[order(tgfResults$stat), ]
 
 #Results saved to a csv for later use
-write.csv(basalResults, file = "./Data/ECM Targeted RNAseq Basal DE Results.csv")
-write.csv(tgfResults, file = "./Data/ECM Targeted RNAseq TGF DE Results.csv")
+write.csv(basalResults, file = "./Data/PSCs Basal DE Results.csv")
+write.csv(tgfResults, file = "./Data/PSCs TGF DE Results.csv")
 
 
 
@@ -141,7 +141,7 @@ tgfShrinkRes <- merge(geneInfo, data.frame(tgfShrinkRes), by = "row.names")
 tgfShrinkRes <- data.frame(tgfShrinkRes, row.names = "Row.names")
 
 #Results saved to a csv for later use
-write.csv(basalShrinkRes, file = "./Data/ECM Targeted RNAseq Basal Shrunk DE Results.csv")
-write.csv(tgfShrinkRes, file = "./Data/ECM Targeted RNAseq TGF Shrunk DE Results.csv")
+write.csv(basalShrinkRes, file = "./Data/PSCs Basal Shrunk DE Results.csv")
+write.csv(tgfShrinkRes, file = "./Data/PSCs TGF Shrunk DE Results.csv")
 
 

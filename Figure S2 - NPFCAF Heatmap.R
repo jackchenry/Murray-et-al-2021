@@ -9,7 +9,7 @@ library("circlize")
 
 ## Loading Data ----
 #Differential expression results read into the environment from the previous analysis
-basalDE <- read.csv("./Data/ECM Targeted RNAseq Basal DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
+basalDE <- read.csv("./Data/PSCs Basal DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
 djurecDE <- read.csv("./Data/Djurec NPFCAF DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
 
 #Reduces only to the genes that we are interested from the basal data
@@ -17,7 +17,7 @@ basalSignifDE <- basalDE[!is.na(basalDE$padj) & basalDE$padj < 0.05, ]
 basalDjurecDE <- djurecDE[row.names(basalSignifDE), ]
 
 #Normalised counts read into the environment from the previous analysis
-basalNorm <- read.csv("./Data/Basal Normalised Count Matrix.csv", stringsAsFactors = FALSE, row.names = 1)
+basalNorm <- read.csv("./Data/PSCs Basal Normalised Count Matrix.csv", stringsAsFactors = FALSE, row.names = 1)
 djurecNorm <- read.csv("./Data/Djurec NPFCAF Normalised Counts.csv", stringsAsFactors = FALSE, row.names = 1)
 
 #Normalised counts also reduced only to the genes that we are interested in from the basal data
@@ -63,6 +63,7 @@ basalPlotData <- data.frame(
   exp = "KO vs Wt",
   gene = basalSignifDE$mgi_symbol,
   padj = basalSignifDE$padj,
+  log2FoldChange = basalSignifDE$log2FoldChange,
   stat = basalSignifDE$stat
 )
 
@@ -70,6 +71,7 @@ djurecPlotData <- data.frame(
   exp = "CAFvsNPF",
   gene = basalDjurecDE$mgi_symbol,
   padj = basalDjurecDE$padj,
+  log2FoldChange = basalDjurecDE$log2FoldChange,
   stat = basalDjurecDE$stat
 )
 
@@ -77,8 +79,8 @@ combPlotData <- rbind(basalPlotData, djurecPlotData)
 
 #The heatmap is ordered by combined stat, but a x2 weight is given to the PSC data since this is the data we are more interested in.
 rowOrder <-  levels(reorder(combPlotData$gene, c(
-  (combPlotData[combPlotData$exp == "KO vs Wt", "stat"])*2,
-  combPlotData[combPlotData$exp == "CAFvsNPF", "stat"])
+  (combPlotData[combPlotData$exp == "KO vs Wt", "stat"]),
+  combPlotData[combPlotData$exp == "CAFvsNPF", "stat"] * 2)
 ))
 
 
@@ -87,7 +89,7 @@ rowOrder <-  levels(reorder(combPlotData$gene, c(
 ## Heatmap Annotations ----
 #Annotations will include bar plots of summary data and a concur yes/no indication
 basalMatch <- match(rownames(combZScores), basalSignifDE$mgi_symbol)
-djurecMatch <- match(rownames(combZScores), rownames(basalDjurecDE))
+djurecMatch <- match(rownames(combZScores), basalDjurecDE$mgi_symbol)
 
 concur <- ifelse(
   basalSignifDE[basalMatch, "log2FoldChange"] < 0 &
@@ -111,21 +113,20 @@ rowAnnot = rowAnnotation(
     basalDjurecDE[djurecMatch, "log2FoldChange"],
     bar_width = 1,
     gp = gpar(col = "white", fill = ifelse(
-      basalDjurecDE[djurecMatch, "padj"] < 0.05 &
-        !is.na(basalDjurecDE[djurecMatch, "padj"])) &
+      basalDjurecDE[djurecMatch, "padj"] < 0.05 & !is.na(basalDjurecDE[djurecMatch, "padj"]) &
         basalDjurecDE[djurecMatch, "log2FoldChange"] > 0,
       "#b2182b",
       ifelse(basalDjurecDE[djurecMatch, "padj"] >= 0.05 &
                basalDjurecDE[djurecMatch, "log2FoldChange"] > 0,
              "#fddbc7",
-             ifelse(basalDjurecDE[djurecMatch, "padj"] < 0.05 &
+             ifelse(basalDjurecDE[djurecMatch, "padj"] < 0.05 & !is.na(basalDjurecDE[djurecMatch, "padj"]) &
                       basalDjurecDE[djurecMatch, "log2FoldChange"] < 0,
                     "#2166ac",
                     "#d1e5f0")
       )
     )),
     border = TRUE,
-    axis_param = list(at = seq(-8, 8, by = 2)), ylim = c(-8, 8), width = unit(3.5, "cm")
+    axis_param = list(at = seq(-4, 4, by = 2)), ylim = c(-5, 5), width = unit(3.5, "cm")
   ),
   Concur = concur,
   col = list(Concur = c("True" = "#55C54B", "False" = "#C54B4B")), show_legend = FALSE
@@ -160,6 +161,8 @@ legends <- list(
   )
 )
 
+
+
 ## Plotting the Heatmap ----
 baseHeatmap <- Heatmap(
   name = "per gene z scores",
@@ -172,7 +175,7 @@ baseHeatmap <- Heatmap(
   column_split = heatmapSplit,
   right_annotation = rowAnnot,
   cluster_columns = TRUE,
-  show_column_dend = FALSE,
+  show_column_dend = TRUE,
   show_column_names = FALSE,
   cluster_column_slices = FALSE,
 

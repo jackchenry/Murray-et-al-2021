@@ -13,7 +13,7 @@ library("ggplot2")
 
 ## Basal Heatmap ----
 #Data is read into the environment
-basalResults <- read.csv("./Data/ECM Targeted RNAseq Basal DE Results.csv")
+basalResults <- read.csv("./Data/PSCs Basal DE Results.csv")
 
 #Only significant results are kept to plot
 basalPlotData <- basalResults[!is.na(basalResults$padj) & basalResults$padj < 0.05,
@@ -43,7 +43,7 @@ basalPlot
 
 ## TGF-stimulated Heatmap ----
 #Data is read into the environment
-tgfResults <- read.csv("./Data/ECM Targeted RNAseq TGF DE Results.csv")
+tgfResults <- read.csv("./Data/PSCs TGF DE Results.csv")
 
 #Only significant results are kept to plot
 tgfPlotData <- tgfResults[!is.na(tgfResults$padj) & tgfResults$padj < 0.05,

@@ -9,7 +9,7 @@ library("circlize")
 
 ## Loading Data ----
 #Differential expression results read into the environment from the previous analysis
-basalDE <- read.csv("./Data/ECM Targeted RNAseq Basal DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
+basalDE <- read.csv("./Data/PSCs Basal DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
 tuvesonDE <- read.csv("./Data/Tuveson iCAFmyCAF DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
 
 #Reduces only to the genes that we are interested from the basal data
@@ -17,7 +17,7 @@ basalSignifDE <- basalDE[!is.na(basalDE$padj) & basalDE$padj < 0.05, ]
 basalTuvesonDE <- tuvesonDE[which(rownames(tuvesonDE) %in% basalSignifDE$mgi_symbol), ]
 
 #Normalised counts read into the environment from the previous analysis
-basalNorm <- read.csv("./Data/Basal Normalised Count Matrix.csv", stringsAsFactors = FALSE, row.names = 1)
+basalNorm <- read.csv("./Data/PSCs Basal Normalised Count Matrix.csv", stringsAsFactors = FALSE, row.names = 1)
 tuvesonNorm <- read.csv("./Data/Tuveson iCAFmyCAF Normalised Counts.csv", stringsAsFactors = FALSE, row.names = 1)
 
 #Normalised counts also reduced only to the genes that we are interested in from the basal data
@@ -46,6 +46,7 @@ basalZScores <- calculateZScore(basalNorm)
 tuvesonZScores <- calculateZScore(tuvesonNorm)
 combZScores <- merge(basalZScores, tuvesonZScores, by = "row.names")
 combZScores <- data.frame(combZScores, row.names = 1)
+
 
 
 ## Heatmap Metadata ----
@@ -159,6 +160,8 @@ legends <- list(
   )
 )
 
+
+
 ## Plotting the Heatmap ----
 baseHeatmap <- Heatmap(
   name = "per gene z scores",
@@ -171,7 +174,7 @@ baseHeatmap <- Heatmap(
   column_split = heatmapSplit,
   right_annotation = rowAnnot,
   cluster_columns = TRUE,
-  show_column_dend = FALSE,
+  show_column_dend = TRUE,
   show_column_names = FALSE,
   cluster_column_slices = FALSE,
 
