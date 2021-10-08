@@ -2,10 +2,11 @@
 # - Plot a Kaplan Meier graph comparing low and high PKN2KO signature in TCGA-PAAD data.
 
 
+
 ## Preparation ----
 #Required packages are loaded
 library("TCGAbiolinks")
-library("biomaRt")
+library("dplyr")
 library("survival")
 library("survminer")
 
@@ -22,7 +23,26 @@ calculateZScore <- function(reads){
 }
 
 #This is the PKN2-KO signature from the paper
-PKN2KOSig <- c("Col6a3", "Fmod", "Mmp28", "Prelp", "Serping1", "Col4a1", "Gpc1", "Megf10", "Itga7", "Serpinb8", "Pcdh7")
+PKN2KOSig <- read.csv("./Data/PKN2KO Signature.csv", stringsAsFactors = FALSE)
+
+#This is normalised TCGA-PAAD RNAseq count data
+PAAD <- read.csv(
+  "./../common/NormalisedCountMatrices/TCGA-PAAD-Normalised-Primary_Tumor.csv",
+  stringsAsFactors = FALSE, row.names = 1
+)
+
+
+
+##Scoring patients for the PKN2KO Signature
+#PKN2KO Signature genes are selected from the TCGA-PAAD count data
+PAADSig <- PAAD[PKN2KOSig$human_ensembl_gene_id, ]
+#Gene-wise z-scores are calculated for each signature gene
+PAADSigZ <- calculateZScore(PAADSig)
+#Patients are scored by the sum of the signature genes
+PKN2KOScore <- data.frame(score = colSums(PAADSigZ))
+#Patient column is made that will match with the clinic data information
+PKN2KOScore$patient <- gsub(".", "-", substr(rownames(PKN2KOScore), 1, 12), fixed = TRUE)
+row.names(PKN2KOScore) <- NULL
 
 
 
@@ -32,9 +52,9 @@ clinicQuery <- GDCquery_clinic(
   project = "TCGA-PAAD",
   type = "clinical"
 )
-#Creates a dataframe containg patient ID, survival status and time
+#Creates a dataframe containing patient ID, survival status and time
 clinicData <- data.frame(
-  row.names = clinicQuery$submitter_id,
+  patient = clinicQuery$submitter_id,
   status = case_when(
     clinicQuery$vital_status == "Alive" ~ 0,
     clinicQuery$vital_status == "Dead" ~ 1),
@@ -44,32 +64,32 @@ clinicData <- data.frame(
 
 
 
+##Preparing the survival data
+#Clinical data is merged with
+survData <- merge(clinicData, PKN2KOScore, by = "patient")
+cuts <- surv_cutpoint(data = survData, time = "time", event = "status", variables = "score")
+survData <- surv_categorize(cuts)
+survData$score <- ifelse(survData$score == "high", "High Score", "Low Score")
 
 
 
+##Fitting the survival data
+fit <- survfit(Surv(time, status) ~ score, data = survData)
 
 
 
-
-
-
-
-cuts <- surv_cutpoint(data = basalPAADScoresClinic, time = "time", event = "status", variables = "Score")
-basalPAADScoresClinic <- surv_categorize(cuts)
-
-fit <- survfit(Surv(time, status) ~ Score, data = basalPAADScoresClinic)
-
+##Plotting the KM curve
 survPlot <- ggsurvplot(
   fit,
-  data = basalPAADScoresClinic,
+  data = survData,
   risk.table = T,
-  pval = T, #p,
+  pval = T,
   pval.method = T,
   conf.int = F,
   xlab = "Time (Days)",
   palette = c("red", "blue"),
   break.time.by = 500,
+  risk.table.y.text = FALSE,
   ggtheme = theme_bw()
-  #surv.median.line = "hv",
-  #ncensor.plot = TRUE,
 )
+survPlot
