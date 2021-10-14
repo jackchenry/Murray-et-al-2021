@@ -60,28 +60,30 @@ clinicData <- data.frame(
     clinicQuery$vital_status == "Dead" ~ 1),
   time = case_when(
     clinicQuery$vital_status == "Alive" ~ clinicQuery$days_to_last_follow_up,
-    clinicQuery$vital_status == "Dead" ~ clinicQuery$days_to_death))
+    clinicQuery$vital_status == "Dead" ~ clinicQuery$days_to_death),
+  stage = clinicQuery$ajcc_pathologic_stage
+  grade = clinicQuery$ajcc_pathologic_t)
 
 
 
 ##Preparing the survival data
-#Clinical data is merged with
+#Clinical data is merged with PKN2KO signature score data
 survData <- merge(clinicData, PKN2KOScore, by = "patient")
+#Optimal cuts are determined
 cuts <- surv_cutpoint(data = survData, time = "time", event = "status", variables = "score")
-survData <- surv_categorize(cuts)
-survData$score <- ifelse(survData$score == "high", "High Score", "Low Score")
+fitData <- surv_categorize(cuts)
 
 
 
 ##Fitting the survival data
-fit <- survfit(Surv(time, status) ~ score, data = survData)
+fit <- survfit(Surv(time, status) ~ score, data = fitData)
 
 
 
 ##Plotting the KM curve
 survPlot <- ggsurvplot(
   fit,
-  data = survData,
+  data = fitData,
   risk.table = T,
   pval = T,
   pval.method = T,
@@ -93,3 +95,9 @@ survPlot <- ggsurvplot(
   ggtheme = theme_bw()
 )
 survPlot
+
+
+
+##Saving annotated data
+survData$split <- ifelse(survData$score > cuts$cutpoint$cutpoint, "High", "Low")
+write.csv(survData, "./Data/TCGA-PAAD PKN2KO Signature Data.csv", row.names = FALSE)

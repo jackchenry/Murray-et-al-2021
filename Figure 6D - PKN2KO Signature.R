@@ -62,4 +62,4 @@ colnames(conversionTable) <- c("mouse_ensembl_gene_id", "human_ensembl_gene_id",
 #Human names and Ids are merged with the mouse data from PKN2KOsig
 PKN2KOsig <- merge(PKN2KOsig, conversionTable, by = "mouse_ensembl_gene_id")
 
-write.csv(PKN2KOsig, "./Data/PKN2KO Signature.csv")
+write.csv(PKN2KOsig, "./Data/PKN2KO Signature.csv", row.names = FALSE)
