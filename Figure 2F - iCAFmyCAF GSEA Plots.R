@@ -1,11 +1,6 @@
 # Aims:
 # - Plot individual GSEA plots for some selected pathways
 
-#Selected Hallmark pathways are:
-# - EMT
-# - Inflammatory response
-# - IL6/JAK/STAT3 signalling
-
 #Selected custom pathways are:
 # - myCAF up - top 200 genes from the Ohlund et al., 2017 paper
 # - iCAF down - top 200 genes from the Ohlund et al., 2017 paper

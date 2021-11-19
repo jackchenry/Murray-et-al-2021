@@ -5,8 +5,6 @@
 
 ## Preparation ----
 #Required packages are loaded
-library("TCGAbiolinks")
-library("dplyr")
 library("survival")
 library("survminer")
 
@@ -22,7 +20,7 @@ calculateZScore <- function(reads){
   return(zScores)
 }
 
-#This is the PKN2-KO signature from the paper
+#This is the PKN2-KO signature from the paper (figure 6D)
 PKN2KOSig <- read.csv("./Data/PKN2KO Signature.csv", stringsAsFactors = FALSE)
 
 #This is normalised TCGA-PAAD RNAseq count data
@@ -31,9 +29,12 @@ PAAD <- read.csv(
   stringsAsFactors = FALSE, row.names = 1
 )
 
+#Clinical data read into the environment
+rawClinicData <- read.csv("./../common/PatientData/clinicalDataLiuetal.csv", stringsAsFactors = FALSE)
 
 
-##Scoring patients for the PKN2KO Signature
+
+##PKN2KO Signature Patient Scores ----
 #PKN2KO Signature genes are selected from the TCGA-PAAD count data
 PAADSig <- PAAD[PKN2KOSig$human_ensembl_gene_id, ]
 #Gene-wise z-scores are calculated for each signature gene
@@ -46,27 +47,19 @@ row.names(PKN2KOScore) <- NULL
 
 
 
-##Downloading the clinic data from TCGA-biolinks
-#Creating a clinic query for TCGA-PAAD
-clinicQuery <- GDCquery_clinic(
-  project = "TCGA-PAAD",
-  type = "clinical"
-)
+##Clinical Data ----
+#Clinic data is narrowed down to only the TCGA-PAAD data
+rawClinicData <- rawClinicData[rawClinicData$type == "PAAD", ]
 #Creates a dataframe containing patient ID, survival status and time
 clinicData <- data.frame(
-  patient = clinicQuery$submitter_id,
-  status = case_when(
-    clinicQuery$vital_status == "Alive" ~ 0,
-    clinicQuery$vital_status == "Dead" ~ 1),
-  time = case_when(
-    clinicQuery$vital_status == "Alive" ~ clinicQuery$days_to_last_follow_up,
-    clinicQuery$vital_status == "Dead" ~ clinicQuery$days_to_death),
-  stage = clinicQuery$ajcc_pathologic_stage
-  grade = clinicQuery$ajcc_pathologic_t)
+  "patient" = rawClinicData$bcr_patient_barcode ,
+  "status" = as.numeric(rawClinicData$OS),
+  "time" = as.numeric(rawClinicData$OS.time)
+)
 
 
 
-##Preparing the survival data
+##Preparing the survival data ----
 #Clinical data is merged with PKN2KO signature score data
 survData <- merge(clinicData, PKN2KOScore, by = "patient")
 #Optimal cuts are determined
@@ -75,12 +68,12 @@ fitData <- surv_categorize(cuts)
 
 
 
-##Fitting the survival data
+##Fitting the survival data ----
 fit <- survfit(Surv(time, status) ~ score, data = fitData)
 
 
 
-##Plotting the KM curve
+##Plotting the KM curve ----
 survPlot <- ggsurvplot(
   fit,
   data = fitData,
@@ -98,6 +91,6 @@ survPlot
 
 
 
-##Saving annotated data
+##Saving annotated data ----
 survData$split <- ifelse(survData$score > cuts$cutpoint$cutpoint, "High", "Low")
 write.csv(survData, "./Data/TCGA-PAAD PKN2KO Signature Data.csv", row.names = FALSE)

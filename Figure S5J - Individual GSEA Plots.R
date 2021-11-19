@@ -6,63 +6,29 @@
 # - Inflammatory response
 # - IL6/JAK/STAT3 signalling
 
-#Selected custom pathways are:
-# - myCAF up - top 200 genes from the Ohlund et al., 2017 paper
-# - iCAF down - top 200 genes from the Ohlund et al., 2017 paper
-
 
 
 ##Preparation ----
 #The required packages are loaded
 library("fgsea") #Used for Gene-set enrichment analysis
 library("ggplot2") #Used to plot the ranked plot and modify enrichment plots
+library("dplyr") #Used for case_when()
+library("grid") #Used for grobs
 
 #The genesets are loaded into the environment. Genesets obtained from the
 hallmark <- gmtPathways("./Data/Genesets/h.all.v7.2.symbols.gmt")
 
-#The Ohlund paper DE data is loaded into the environment. Obtained from the GEO: GSE93313.
-myCAFDE <- read.csv("./Data/GSE93313_DESeq_2Dvs3D.csv", stringsAsFactors = FALSE) #2dvs3D = myCAF
-iCAFDE <- read.csv("./Data/GSE93313_DESeq_3DvsTranswell.csv", stringsAsFactors = FALSE) #3Dvs4D = iCAF
-
-#
+#The RNAseq data from this study is read into the environment.
 tumDE <- read.csv("./Data/InVivo Tumour DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
 
 
-##Construction of Ohlund Genesets ----
-#Only the significant results are kept
-myCAFDESignf <- myCAFDE[myCAFDE$padj < 0.05 &  !is.na(myCAFDE$padj), ]
-iCAFDESignf <- iCAFDE[iCAFDE$padj < 0.05  & !is.na(iCAFDE$padj), ]
-#Remove any genes that have a fold change of 0 or inf
-myCAFDESignf <- myCAFDESignf[myCAFDESignf$foldChange != 0 & is.finite(myCAFDESignf$foldChange), ]
-iCAFDESignf <- iCAFDESignf[iCAFDESignf$foldChange != 0 & is.finite(iCAFDESignf$foldChange), ]
-
-#Ordered by fc same as in the paper
-myCAFDESignf <- myCAFDESignf[order(myCAFDESignf$foldChange), ] #This one is backwards with its DESeq comparison
-iCAFDESignf <- iCAFDESignf[order(-iCAFDESignf$foldChange), ]
-
-#Check that the top genes match those that are in the paper
-myCAFDESignf$id[1:25]
-iCAFDESignf$id[1:25]
-
-
-
 ##Construction of the final gene-set lists ----
-#Different lists are made for the different labellings of the ranks.
 #hgnc symbol rank list
 hNameGenesets <- list(
   "hallmarkEMT" = hallmark$HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION,
   "hallmarkInflammatory" = hallmark$HALLMARK_INFLAMMATORY_RESPONSE,
   "hallmarkIl6Stat3" = hallmark$HALLMARK_IL6_JAK_STAT3_SIGNALING
 )
-
-#mgi symbol id rank
-#The top 200 and bottom iCAF and myCAF differentially expressed genes are selected to form the gene-sets.
-#Some of these may not be expressed in our data, hence why the number of genes shown in the graph is different.
-mNameGenesets <- list(
-  "myCAF_Up" = myCAFDESignf$id[1:200],
-  "iCAF_Up" = iCAFDESignf$id[1:200]
-)
-
 
 
 
@@ -76,16 +42,10 @@ ranks <- ranks[order(-ranks$stat), ]
 hNameRanks <- ranks$stat
 names(hNameRanks) <- ranks$hgnc_symbol
 
-#mgi symbol id rank
-mNameRanks <- ranks$stat
-names(mNameRanks) <- ranks$mgi_symbol
-
 
 
 ##Fgsea analysis ----
 hNameRes <- fgsea(hNameGenesets, hNameRanks, eps = 0)
-mNameRes <- fgsea(mNameGenesets, mNameRanks, eps = 0)
-
 
 
 
@@ -140,7 +100,6 @@ plotEnrichmentGraphs <- function(fgseaResults, genesets, ranks, titleDataType){
 
 ##Enrichment plot results ----
 plotEnrichmentGraphs(hNameRes, hNameGenesets, hNameRanks, "tumour data")
-plotEnrichmentGraphs(mNameRes, mNameGenesets, mNameRanks, "tumour data")
 
 
 
