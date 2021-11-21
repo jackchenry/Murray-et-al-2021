@@ -19,7 +19,7 @@ rawPAAD <- read.csv(
   "./../common/RawCountMatrices/TCGA-PAAD-Raw-Primary_Tumor.csv",
   stringsAsFactors = FALSE, row.names = 1
 )
-#These are the genes that make up the PKN2KO score performed previously in Fig6D
+#This is the TCGA-PAAD PKN2KO scores calculated previously in Fig6E
 PAAD_PKN2KOScore <- read.csv("./Data/TCGA-PAAD PKN2KO Signature Data.csv", stringsAsFactors = FALSE)
 
 #This is the PKN2KO tumour differential expression performed previously in FigS5
