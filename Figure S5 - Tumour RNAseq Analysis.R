@@ -66,7 +66,7 @@ tumResults <- tumResults[order(tumResults$stat), ]
 
 
 
-##Human Orthologues Information
+##Human Orthologues Information ----
 #Human biomart created
 human <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
 

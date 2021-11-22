@@ -25,7 +25,7 @@ PKN2KOSig <- read.csv("./Data/PKN2KO Signature.csv", stringsAsFactors = FALSE)$h
 
 #A list of TCGA projects
 TCGAProjects <- levels(factor(rawClinicData$type))
-#Remove
+#Remove LAML
 TCGAProjects <- TCGAProjects[TCGAProjects != c("LAML")]
 
 #An empty table where the results will be stored

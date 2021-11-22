@@ -5,7 +5,7 @@
 
 ## Preparation ----
 #Required packages are loaded
-library("biomaRt")
+library("biomaRt") #Used to get gene information
 
 #The required data is loaded
 pscDE <- read.csv("./Data/PSCs Basal DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
@@ -16,7 +16,7 @@ pscDE_signif <- pscDE[pscDE$padj < 0.05 & !is.na(pscDE$padj), ]
 
 
 
-##Creation of the signature
+##Creation of the signature ----
 #Selects only genes that concur between the PSC and tumour data
 selection <- ifelse(
   pscDE_signif[, "log2FoldChange"] < 0 &
@@ -41,7 +41,7 @@ row.names(PKN2KOsig) <- NULL
 
 
 
-##Converting MGI symbols to HGNC Symbols
+##Converting MGI symbols to HGNC Symbols ----
 #Mouse and human ensemble marts
 mouse <- useMart("ensembl", dataset = "mmusculus_gene_ensembl")
 human <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
@@ -62,4 +62,5 @@ colnames(conversionTable) <- c("mouse_ensembl_gene_id", "human_ensembl_gene_id",
 #Human names and Ids are merged with the mouse data from PKN2KOsig
 PKN2KOsig <- merge(PKN2KOsig, conversionTable, by = "mouse_ensembl_gene_id")
 
+#Saving the data to a csv file
 write.csv(PKN2KOsig, "./Data/PKN2KO Signature.csv", row.names = FALSE)

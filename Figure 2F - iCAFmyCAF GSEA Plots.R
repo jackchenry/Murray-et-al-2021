@@ -21,7 +21,7 @@ hallmark <- gmtPathways("./Data/Genesets/h.all.v7.2.symbols.gmt")
 myCAFDE <- read.csv("./Data/GSE93313_DESeq_2Dvs3D.csv", stringsAsFactors = FALSE) #2dvs3D = myCAF
 iCAFDE <- read.csv("./Data/GSE93313_DESeq_3DvsTranswell.csv", stringsAsFactors = FALSE) #3Dvs4D = iCAF
 
-#The RNAseq data from this study is read into the environment.
+#The RNAseq data from this study is read into the environment (Fig S5).
 tumDE <- read.csv("./Data/InVivo Tumour DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
 
 

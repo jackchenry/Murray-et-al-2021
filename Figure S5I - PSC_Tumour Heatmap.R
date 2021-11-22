@@ -6,8 +6,8 @@
 
 ## Preparation ----
 #Required packages are loaded
-library("ComplexHeatmap")
-library("circlize")
+library("ComplexHeatmap") #Used to plot the heatmap
+library("circlize") #Used to create the colour scale
 
 #A simple function to return the per-gene z-scores for a count matrix
 calculateZScore <- function(reads){
@@ -22,17 +22,20 @@ calculateZScore <- function(reads){
 }
 
 #Data is read into the environment
+#This is the normalised count data from the PSCs (Fig2)
 pscNorm <- read.csv("./Data/PSCs Basal Normalised Count Matrix.csv", stringsAsFactors = FALSE, row.names = 1)
-#This is the normalised count data from the pancreatic tumours (Figure S5)
+#This is the normalised count data from the pancreatic tumours (FigS5)
 tumNorm <- read.csv("./Data/InVivo Tumour Normalised Count Matrix.csv", stringsAsFactors = FALSE, row.names = 1)
 
+#These are the differential expression results from the PSCs (Fig2)
 pscDE <- read.csv("./Data/PSCs Basal DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
+#These are the differential expression results from the pancreatic tumours (FigS5)
 tumDE <- read.csv("./Data/InVivo Tumour DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
 
 pscDE_signif <- pscDE[pscDE$padj < 0.05 & !is.na(pscDE$padj), ]
 tumDE_signif <- tumDE[tumDE$padj < 0.05 & !is.na(tumDE$padj), ]
 
-#This is the PKN2-KO signature from the paper
+#This is the PKN2-KO signature from the paper (Fig6D)
 PKN2KOSig <- read.csv("./Data/PKN2KO Signature.csv", stringsAsFactors = FALSE)$mgi_symbol
 
 

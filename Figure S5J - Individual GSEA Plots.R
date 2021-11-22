@@ -15,11 +15,12 @@ library("ggplot2") #Used to plot the ranked plot and modify enrichment plots
 library("dplyr") #Used for case_when()
 library("grid") #Used for grobs
 
-#The genesets are loaded into the environment. Genesets obtained from the
+#The genesets are loaded into the environment. Genesets obtained from the molecular signatures database.
 hallmark <- gmtPathways("./Data/Genesets/h.all.v7.2.symbols.gmt")
 
-#The RNAseq data from this study is read into the environment.
+#The RNAseq data from this study is read into the environment (FigS5).
 tumDE <- read.csv("./Data/InVivo Tumour DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
+
 
 
 ##Construction of the final gene-set lists ----

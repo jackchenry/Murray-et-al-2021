@@ -4,13 +4,11 @@
 
 ##Preparation ----
 #Required packages are loaded
-library("ComplexHeatmap")
-library("circlize")
+library("ComplexHeatmap") #Used to plot the heatmap
+library("circlize") #Used to create the colour scale
 
 #Required data is read into the environment
 miNorm <- read.csv("./Data/Oliver Matrix Index Normalised Counts.csv", stringsAsFactors = FALSE, row.names = 1)
-
-
 
 #A simple function to return the per-gene z-scores for a count matrix
 calculateZScore <- function(reads){

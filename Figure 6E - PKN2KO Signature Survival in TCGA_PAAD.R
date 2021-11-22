@@ -5,8 +5,8 @@
 
 ## Preparation ----
 #Required packages are loaded
-library("survival")
-library("survminer")
+library("survival") #Used for survival analysis
+library("survminer") #Used to plot the KM plot
 
 #A simple function to return the per-gene z-scores for a count matrix
 calculateZScore <- function(reads){

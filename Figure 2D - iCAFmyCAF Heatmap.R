@@ -4,12 +4,12 @@
 
 #Packages
 library("ComplexHeatmap") #Used to plot the heatmap
-library("circlize") #Used to
+library("circlize") #Used to generate colour scale
 
 
 
 ## Loading Data ----
-#Differential expression results read into the environment from the previous analysis
+#Differential expression results read into the environment from the previous analysis (Fig2)
 basalDE <- read.csv("./Data/PSCs Basal DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
 tuvesonDE <- read.csv("./Data/Tuveson iCAFmyCAF DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
 
@@ -17,7 +17,7 @@ tuvesonDE <- read.csv("./Data/Tuveson iCAFmyCAF DE Results.csv", stringsAsFactor
 basalSignifDE <- basalDE[!is.na(basalDE$padj) & basalDE$padj < 0.05, ]
 basalTuvesonDE <- tuvesonDE[which(rownames(tuvesonDE) %in% basalSignifDE$mgi_symbol), ]
 
-#Normalised counts read into the environment from the previous analysis
+#Normalised counts read into the environment from the previous analysis (Fig2)
 basalNorm <- read.csv("./Data/PSCs Basal Normalised Count Matrix.csv", stringsAsFactors = FALSE, row.names = 1)
 tuvesonNorm <- read.csv("./Data/Tuveson iCAFmyCAF Normalised Counts.csv", stringsAsFactors = FALSE, row.names = 1)
 

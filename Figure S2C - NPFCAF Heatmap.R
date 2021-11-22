@@ -2,13 +2,14 @@
 # - Plot a heatmap comparing the Djurec NPF/CAF data with the Basal ECM-Targeted RNA-Seq panel data.
 # - Add annotations to the heatmap highlighting similarities and differences between the experiments.
 
-library("ComplexHeatmap")
-library("circlize")
+#Packages
+library("ComplexHeatmap") #Used to plot the heatmap
+library("circlize") #Used to create the colour scale
 
 
 
 ## Loading Data ----
-#Differential expression results read into the environment from the previous analysis
+#Differential expression results read into the environment from the previous analysis (Fig2)
 basalDE <- read.csv("./Data/PSCs Basal DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
 djurecDE <- read.csv("./Data/Djurec NPFCAF DE Results.csv", stringsAsFactors = FALSE, row.names = 1)
 
@@ -16,7 +17,7 @@ djurecDE <- read.csv("./Data/Djurec NPFCAF DE Results.csv", stringsAsFactors = F
 basalSignifDE <- basalDE[!is.na(basalDE$padj) & basalDE$padj < 0.05, ]
 basalDjurecDE <- djurecDE[row.names(basalSignifDE), ]
 
-#Normalised counts read into the environment from the previous analysis
+#Normalised counts read into the environment from the previous analysis (Fig2)
 basalNorm <- read.csv("./Data/PSCs Basal Normalised Count Matrix.csv", stringsAsFactors = FALSE, row.names = 1)
 djurecNorm <- read.csv("./Data/Djurec NPFCAF Normalised Counts.csv", stringsAsFactors = FALSE, row.names = 1)
 
@@ -27,6 +28,8 @@ djurecNorm <- djurecNorm[row.names(basalSignifDE), ]
 #The basal and Djurec count matrix is renamed to its mgi_symbol
 row.names(basalNorm) <- basalSignifDE[match(row.names(basalSignifDE), row.names(basalNorm)), "mgi_symbol"]
 row.names(djurecNorm) <- basalSignifDE[match(row.names(basalSignifDE), row.names(djurecNorm)), "mgi_symbol"]
+
+
 
 ## Scaled Heatmap Matrix ----
 #A simple function to return the per-gene z-scores for a count matrix
@@ -45,6 +48,7 @@ basalZScores <- calculateZScore(basalNorm)
 djurecZScores <- calculateZScore(djurecNorm)
 combZScores <- merge(basalZScores, djurecZScores, by = "row.names")
 combZScores <- data.frame(combZScores, row.names = 1)
+
 
 
 ## Heatmap Metadata ----
@@ -82,7 +86,6 @@ rowOrder <-  levels(reorder(combPlotData$gene, c(
   (combPlotData[combPlotData$exp == "KO vs Wt", "stat"]),
   combPlotData[combPlotData$exp == "CAFvsNPF", "stat"] * 2)
 ))
-
 
 
 
