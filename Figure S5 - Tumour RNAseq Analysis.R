@@ -22,7 +22,7 @@ metadata <- data.frame(
   sample = colnames(raw),
   genotype = ifelse(substr(colnames(raw), 1, 2) == "WT", "WT", "KO"),
   type = c("Tum", "Panc", "Tum", "Tum", "Panc", "Panc", "Tum", "Panc", "Tum", "Tum", "Tum", "Tum", "Panc", "Tum", "Tum", "Panc", "Tum")
-  )
+)
 
 #Creating a count matrix for just the tumour samples
 tumIDs <- data.frame(metadata[metadata$type == "Tum", c("sample", "genotype")])
