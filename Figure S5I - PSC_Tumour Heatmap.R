@@ -23,6 +23,7 @@ calculateZScore <- function(reads){
 
 #Data is read into the environment
 pscNorm <- read.csv("./Data/PSCs Basal Normalised Count Matrix.csv", stringsAsFactors = FALSE, row.names = 1)
+#This is the normalised count data from the pancreatic tumours (Figure S5)
 tumNorm <- read.csv("./Data/InVivo Tumour Normalised Count Matrix.csv", stringsAsFactors = FALSE, row.names = 1)
 
 pscDE <- read.csv("./Data/PSCs Basal DE Results.csv", stringsAsFactors = FALSE, row.names = 1)

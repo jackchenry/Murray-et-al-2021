@@ -20,7 +20,7 @@ library("ggplot2") #Used to plot the final plot
 #Clinical data read into the environment
 rawClinicData <- read.csv("./../common/PatientData/clinicalDataLiuetal.csv", stringsAsFactors = FALSE)
 
-#This is the PKN2-KO signature from the paper (figure 6D)
+#This is the PKN2-KO signature from the paper (Figure 6D)
 PKN2KOSig <- read.csv("./Data/PKN2KO Signature.csv", stringsAsFactors = FALSE)$human_ensembl_gene_id
 
 #A list of TCGA projects
