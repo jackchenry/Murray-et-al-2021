@@ -35,8 +35,9 @@ PEDPKN2 <- merge(PAADSig, PEDData, by = "patient")
 PEDPKN2$split <- factor(PEDPKN2$split, levels = c("Low", "High"))
 
 
+
 ##Calculating pancreatic cancer counts ----
-#Moffit
+#Moffitt
 moffit <- data.frame(
   "Study" = "Moffit",
   "Condition" = factor(c("Basal", "Basal", "Classical", "Classical", "Undefined", "Undefined")),
@@ -50,7 +51,7 @@ moffit <- data.frame(
     sum(PEDPKN2$Moffit_subtype  == "" & PEDPKN2$split == "High")
   )
 )
-
+#Collisson
 collisson <- data.frame(
   "Study" = "Collisson",
   "Condition" = factor(c("Classical", "Classical", "QM", "QM", "Exocrine", "Exocrine", "Undefined", "Undefined")),
@@ -66,7 +67,7 @@ collisson <- data.frame(
     sum(PEDPKN2$Collisson_subtype  == "" & PEDPKN2$split == "High")
   )
 )
-
+#Bailey
 bailey <- data.frame(
   "Study" = "Bailey",
   "Condition" = factor(c("Progenitor", "Progenitor", "Squamous", "Squamous", "ADEX", "ADEX", "Immunogenic", "Immunogenic", "Undefined", "Undefined")),
@@ -84,17 +85,19 @@ bailey <- data.frame(
     sum(PEDPKN2$Bailey_subtype == "" & PEDPKN2$split == "High")
   )
 )
-
+#Combines all the data frames together
 moffitCollissonBailey <- rbind(moffit, collisson, bailey)
 
 
 
 ##Saving the data ----
+#This data will be later plotted in GraphPad Prism
 write.csv(moffitCollissonBailey, "./Data/MoffitCollissonBaileyData.csv")
 
 
 
 ##Preparing data for CoxPH survival analysis ----
+#Extracts each overlapping patient groups and puts them into a list
 coxMCB <- list(
   "Moffit Basal" = PEDPKN2[PEDPKN2$Moffit_subtype == "Basal", ],
   "Moffit Classical" = PEDPKN2[PEDPKN2$Moffit_subtype == "Classical", ],
