@@ -1,6 +1,6 @@
 # Aims:
-# - Create the PKN2KO signature.
-# - Convert the PKN2KO signature to human equilivant
+# - Create the PKN2KO signature
+# - Convert the PKN2KO signature to human equivalent
 
 
 ## Preparation ----
@@ -42,7 +42,7 @@ row.names(PKN2KOsig) <- NULL
 
 
 ##Converting MGI symbols to HGNC Symbols
-#Mouse and human ensebl marts
+#Mouse and human ensemble marts
 mouse <- useMart("ensembl", dataset = "mmusculus_gene_ensembl")
 human <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
 

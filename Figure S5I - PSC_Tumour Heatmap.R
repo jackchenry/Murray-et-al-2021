@@ -107,14 +107,14 @@ tumConcur <- ifelse(
 
 #The annotation that shows the Log2-fold change obtained from the DE results data
 rowAnnot = rowAnnotation(
-  KOvsWt_PSCs = anno_barplot(
+  "KOvsWt_PSCs" = anno_barplot(
     pscDE_signif[match(rownames(allZ), rownames(pscDE_signif)), "log2FoldChange"],
     bar_width = 1,
     gp = gpar(col = "white", fill = ifelse(pscDE_signif[match(rownames(allZ), rownames(pscDE_signif)), "log2FoldChange"] > 0, "#b2182b", "#2166ac")),
     border = TRUE,
     axis_param = list(at = seq(-4, 4, by = 2)), ylim = c(-4, 4), width = unit(3.5, "cm")
   ),
-  KOvsWt_Tumour = anno_barplot(
+  "KOvsWt_Tumour" = anno_barplot(
     tumDE[match(rownames(allZ), rownames(tumDE)), "log2FoldChange"],
     bar_width = 1,
     gp = gpar(col = "white", fill = ifelse((tumDE[match(rownames(allZ), rownames(tumDE)), "padj"] < 0.05 & !is.na(tumDE[match(rownames(allZ), rownames(tumDE)), "padj"]))
@@ -127,7 +127,7 @@ rowAnnot = rowAnnotation(
     border = TRUE,
     axis_param = list(at = seq(-2, 2, by = 2)), ylim = c(-2.5, 2.5), width = unit(3.5, "cm")
   ),
-  Concur = tumConcur,
+  "Concur" = tumConcur,
   col = list(Concur = c("True" = "#2166ac", "False" = "#b2182b")),
   show_legend = FALSE,
   annotation_label = c("KOvsWt PSCs", "KOvsWt Tumour", "Concur"),
@@ -170,3 +170,9 @@ baseHeatmap <- Heatmap(
 )
 heatmap <- draw(baseHeatmap, annotation_legend_list = legends)
 heatmap
+
+
+
+##Save Data ----
+#Saving the row order for later use
+write.csv(rowOrder, "./Data/Tumour PSC Heatmap Row Order.csv", row.names = FALSE)

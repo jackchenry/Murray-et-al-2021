@@ -37,4 +37,5 @@ finalScore <- colSums(tumPKN2SigZ)
 
 
 #Saving data ----
-write.csv(finalScore, "InVivo Tumour PKN2KOSig Score.csv")
+#saving the data for later plotting in graphpad
+write.csv(finalScore, "./Data/InVivo Tumour PKN2KOSig Score.csv")

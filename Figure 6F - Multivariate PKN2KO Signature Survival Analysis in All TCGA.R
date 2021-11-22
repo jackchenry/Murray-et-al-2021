@@ -165,6 +165,7 @@ createClinic <- function(rawClinicData, project){
 
 ##Main loop ----
 #A loop to go through each of the TCGA projects and collect the results for each
+#Using apply would be faster but loops are more understandable
 for(project in TCGAProjects){
   #Gives an idea of where the loop is currently at
   print(project)

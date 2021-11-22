@@ -83,7 +83,7 @@ tumConversionTable <- tumConversionTable[!duplicated(tumConversionTable$mouse_en
 
 #Human annotated data is merged with the tumour differential expression data
 tumResults$mouse_ensembl_gene_id <- rownames(tumResults)
-tumResults <- merge(tumResults, tumConversionTable, by = "mouse_ensembl_gene_id", all.y = TRUE)
+tumResults <- merge(tumResults, tumConversionTable, by = "mouse_ensembl_gene_id", all.x = TRUE)
 
 #Data is saved into a csv for later use
-write.csv(tumResults, file = "./Data/InVivo Tumour DE Results.csv")
+write.csv(tumResults, file = "./Data/InVivo Tumour DE Results.csv", row.names = FALSE)
