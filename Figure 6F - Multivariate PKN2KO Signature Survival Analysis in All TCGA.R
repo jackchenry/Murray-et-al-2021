@@ -203,11 +203,11 @@ for(project in TCGAProjects){
   #Adds the required information into a dataframe
   lCoxTable <- data.frame(
     row.names = project,
-   "HR" = lSummary$coef[1, "exp(coef)"] ,
-   "lowerCI" = lSummary$conf.int[1 ,"lower .95"],
-   "upperCI" = lSummary$conf.int[1 ,"upper .95"],
-   "p" =  lSummary$coef[1, "Pr(>|z|)"],
-   "Wald" = lSummary$coef[1, "z"]
+    "HR" = lSummary$coef[1, "exp(coef)"] ,
+    "lowerCI" = lSummary$conf.int[1 ,"lower .95"],
+    "upperCI" = lSummary$conf.int[1 ,"upper .95"],
+    "p" =  lSummary$coef[1, "Pr(>|z|)"],
+    "Wald" = lSummary$coef[1, "z"]
   )
 
   #Combines the overall dataframe with new row

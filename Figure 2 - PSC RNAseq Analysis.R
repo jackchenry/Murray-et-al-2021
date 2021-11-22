@@ -6,9 +6,12 @@
 # - Samples are either Wt or KO with respects to PKN2
 # - Samples are either untreated (basal) or treated with TGF-b
 
-library("tidyr")
-library("DESeq2")
-library("biomaRt")
+
+
+##Preparation ----
+library("tidyr") #Used for pivot_wider()
+library("DESeq2") #Used to perform differential expression analysis
+library("biomaRt") #Used to get gene information
 
 #Read data into the environment
 csv <- read.csv("./Data/Raw Qiaseq Counts.csv", stringsAsFactors = FALSE)
@@ -143,5 +146,3 @@ tgfShrinkRes <- data.frame(tgfShrinkRes, row.names = "Row.names")
 #Results saved to a csv for later use
 write.csv(basalShrinkRes, file = "./Data/PSCs Basal Shrunk DE Results.csv")
 write.csv(tgfShrinkRes, file = "./Data/PSCs TGF Shrunk DE Results.csv")
-
-

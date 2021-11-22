@@ -2,8 +2,9 @@
 # - Plot a heatmap comparing the Tuveson iCAF/myCAF data with the Basal ECM-Targeted RNA-Seq panel data.
 # - Add annotations to the heatmap highlighting similarities and differences between the experiments.
 
-library("ComplexHeatmap")
-library("circlize")
+#Packages
+library("ComplexHeatmap") #Used to plot the heatmap
+library("circlize") #Used to
 
 
 
